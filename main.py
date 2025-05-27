@@ -1,79 +1,95 @@
 import pygame
 import sys
-
-# Inisialisasi Pygame
 pygame.init()
-font = pygame.font.SysFont(None, 48)
 
-# Screen build
-screen_w, screen_h = 500, 500
-screen = pygame.display.set_mode((screen_w, screen_h))
-pygame.display.set_caption("Menggerakkan Objek")
+class Screen:
+    def __init__(self, width, height, bgColor):
+        self.bgColor = bgColor
+        self.width = width
+        self.height = height
+        self.screen = pygame.display.set_mode((width,height))
+        pygame.display.set_caption("Latihan game sederhana")
+    
+    def fill(self):
+        return self.screen.fill(self.bgColor)
 
-# Color defines
-bgColor = (0,0,0)
-red = (255, 0, 0)
-green = (0, 255, 0)
+class ParentObject:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.velocity = 1
+    
+    def listener(self, screen, key):
+        move_x, move_y = 0, 0
+        if key[pygame.K_LEFT]:
+            move_x -= self.velocity
+            self.movement(screen, move_x, move_y)
+        if key[pygame.K_RIGHT]:
+            move_x += self.velocity
+            self.movement(screen, move_x, move_y)
+        if key[pygame.K_DOWN]:
+            move_y += self.velocity
+            self.movement(screen, move_x, move_y)
+        if key[pygame.K_UP]:
+            move_y -= self.velocity
+            self.movement(screen, move_x, move_y)
+        if key[pygame.K_q]:
+            self.scale()
+        
+        
+    def movement(self, screen, x, y):
+        self.object = self.object.move(x, y)
+        self.object.x = max(0, min(self.object.x, screen.width - self.object.width))
+        self.object.y = max(0, min(self.object.y, screen.height - self.object.height))
+        return self.object
+    
+    def scale(self):
+        self.object.width += 1
+        self.object.height += 1
 
-size = 50
-speed = 1
-# Make objek
-objek1 = pygame.Rect(0, screen_h // 2 - size // 2, size, size)
-objek2 = pygame.Rect(screen_w - size, screen_h // 2 - size // 2, size, size)
-teks = font.render("Tabrakan", True, (255,255,255))
-teks_rect = teks.get_rect(center=(300,200))
+
+class RectObject(ParentObject):
+
+    def __init__(self, x, y, width, height):
+        super().__init__(x, y)
+        self.width = width
+        self.height = height
+        self.object = pygame.Rect(x, y, width, height)  
+    
+    def draw(self, screen, color):
+        return pygame.draw.rect(screen, color, self.object)
+
+
+screen = Screen(500,500, "white")
+firstObj = RectObject(0,0,50,50)
+secObj = RectObject(250-50,screen.height-200,100,200)
 
 running = True
 while running:
-	move_x1, move_y1 = 0, 0
-	move_x2, move_y2 = 0,0
-	
-	screen.fill(bgColor)
-	for event in pygame.event.get():
-		if event.type == pygame.QUIT:
-			running = False
-	
-	# RENDER YOUR GAME HERE
-	prev_objek1 = objek1.copy()
-	prev_objek2 = objek2.copy()
+    screen.fill()
+    pygame.time.delay(2)  
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+    
+    # Collisions
+    colObj = firstObj.object
 
-	keys = pygame.key.get_pressed()
-	if keys[pygame.K_LEFT]:
-		move_x1 -= speed
-	if keys[pygame.K_RIGHT]:
-		move_x1 += speed
-	if keys[pygame.K_DOWN]:
-		move_y1 += speed
-	if keys[pygame.K_UP]:
-		move_y1 -= speed
-	if keys[pygame.K_a]:
-		move_x2 -= speed
-	if keys[pygame.K_d]:
-		move_x2 += speed
-	if keys[pygame.K_s]:
-		move_y2 += speed
-	if keys[pygame.K_w]:
-		move_y2 -= speed
+    # Movement
+    keys = pygame.key.get_pressed()	
+    firstObj.listener(screen, keys)
 
-	objek1 = objek1.move(move_x1, move_y1)
-	objek2 = objek2.move(move_x2, move_y2)
+    # Drawing
+    firstObj.draw(screen.screen, "red")
+    secObj.draw(screen.screen, "blue")
+
+    # Collisions
+    if firstObj.object.colliderect(secObj.object):
+        firstObj.object = colObj
 
 
-	objek1.x = max(0, min(objek1.x, screen_w - size))
-	objek1.y = max(0, min(objek1.y, screen_h - size))
-	objek2.x = max(0, min(objek2.x, screen_w - size))
-	objek2.y = max(0, min(objek2.y, screen_h - size))
+    pygame.display.flip()
 
-	pygame.draw.rect(screen, red, objek1)
-	pygame.draw.rect(screen, green, objek2)
-	
-	if objek1.colliderect(objek2):
-		objek1 = prev_objek1
-		objek2 = prev_objek2
-		screen.blit(teks, teks_rect)
-
-	# flip() the display to put your work on screen
-	pygame.display.flip()
 
 pygame.quit()
 sys.exit()
