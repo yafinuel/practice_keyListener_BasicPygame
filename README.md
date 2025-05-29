@@ -3,15 +3,15 @@ Ini adalah repositori hasil tugas Algoritma Vektor Matriks
 
 ## Pandunan demo 
 ### Pergerakan objek
-atas, bawah, kiri, kanan = kotak
+atas, bawah, kiri, kanan = kotak \n
 w, a, s, d = segitiga
 
 ### Rotasi objek
-z, c = kotak
+z, c = kotak \n
 q, e = segitiga
 
 ### Mirroring objek
-m = Segitiga sumbu x
+m = Segitiga sumbu x \n
 n = Segitiga sumbu y
 
 
