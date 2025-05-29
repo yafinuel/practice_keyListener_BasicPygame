@@ -1,12 +1,12 @@
 import pygame
 
 class Screen:
-    def __init__(self, width, height, bgColor):
-        self.bgColor = bgColor
+    def __init__(self, width, height, bg_color):
         self.width = width
         self.height = height
-        self.screen = pygame.display.set_mode((width,height))
-        pygame.display.set_caption("Latihan game sederhana")
-    
+        self.bg_color = bg_color
+        self.screen = pygame.display.set_mode((width, height))
+        pygame.display.set_caption("Latihan Game Sederhana")
+
     def fill(self):
-        return self.screen.fill(self.bgColor)
+        self.screen.fill(self.bg_color)

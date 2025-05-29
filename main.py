@@ -1,14 +1,13 @@
 import pygame
 import sys
 from screenclass import Screen
-from objectClass import ColObject, RectObject, TriangleObject
+from objectClass import RectObject, TriangleObject, polygons_collide
 
 pygame.init()
 
 screen = Screen(500,500, "white")
 mainObj = RectObject(50, 50,50,50)
 triObj = TriangleObject(350, 50, 50, 50)
-propObj = ColObject(250-50,screen.height-200,100,200)
 
 running = True
 while running:
@@ -20,13 +19,14 @@ while running:
 
     # Movement
     keys = pygame.key.get_pressed()	
-    mainObj.listener(screen, keys)
-    triObj.listener(screen, keys)
+    mainObj.listener(screen, keys, polygons_collide(mainObj, triObj))
+    triObj.listener(screen, keys, polygons_collide(triObj, mainObj))
 
     # Drawing
-    propObj.draw(screen.screen, "blue")
     mainObj.draw(screen, "red")
     triObj.draw(screen, "green")
+    
+    
 
     pygame.display.flip()
 
