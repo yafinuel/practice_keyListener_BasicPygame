@@ -5,31 +5,37 @@ from objectClass import RectObject, TriangleObject, polygons_collide
 
 pygame.init()
 
-screen = Screen(500,500, "white")
-mainObj = RectObject(50, 50,50,50)
-triObj = TriangleObject(350, 50, 50, 50)
+screen = Screen(500, 500, (255, 255, 255))
+rect = RectObject(100, 100, 60, 60)
+triangle = TriangleObject(300, 300, 80, 80)
 
+clock = pygame.time.Clock()
 running = True
+
 while running:
+    clock.tick(60)
     screen.fill()
-    pygame.time.delay(2)  
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
 
-    # Movement
-    keys = pygame.key.get_pressed()	
-    mainObj.listener(screen, keys, polygons_collide(mainObj, triObj))
-    triObj.listener(screen, keys, polygons_collide(triObj, mainObj))
+    keys = pygame.key.get_pressed()
+    prev_rect = rect.x, rect.y, rect.angle
+    prev_triangle = triangle.x, triangle.y, triangle.angle
 
-    # Drawing
-    mainObj.draw(screen, "red")
-    triObj.draw(screen, "green")
-    
-    
+    rect.listener(keys, screen)
+    triangle.listener(keys, screen)
+
+    if polygons_collide(rect, triangle):
+        rect.x, rect.y, rect.angle = prev_rect
+        triangle.x, triangle.y, triangle.angle = prev_triangle
+        rect.update_points()
+        triangle.update_points()
+
+    rect.draw(screen, (255, 0, 0))
+    triangle.draw(screen, (0, 255, 0))
 
     pygame.display.flip()
-
 
 pygame.quit()
 sys.exit()
