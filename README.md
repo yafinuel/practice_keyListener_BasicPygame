@@ -13,7 +13,3 @@ q, e = segitiga
 ### Mirroring objek
 m = Segitiga sumbu x <br>
 n = Segitiga sumbu y
-
-
-
-Link github : [https://github.com/yafinuel/practice_keyListener_BasicPygame.git](https://github.com/yafinuel/practice_keyListener_BasicPygame.git)
